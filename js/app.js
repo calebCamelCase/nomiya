@@ -173,12 +173,60 @@ class Menu {
         let checkoutItemCount = document.getElementById('checkoutItemCount');
         let shipping = 6;
 
+        // console.log(this.itemsInCart.itemCount)
         checkout.addEventListener('click', ()=> {
             if(mainPage.classList.contains('d-none')) return;
             //remove d-none from checkout and add d-none to mainpage
             checkoutPage.classList.remove('d-none');
             mainPage.classList.add('d-none');
-        })
+            if(this.itemsInCart.itemCount == 1){
+                checkoutItemCount.innerText = `${this.itemsInCart.itemCount} item`;
+            } else {
+                checkoutItemCount.innerText = `${this.itemsInCart.itemCount} items`;
+            }
+            
+            //load content on checkout page
+            for(const key in this.menuIventory){
+                const item = this.menuIventory[key];
+
+                subTimesQty = (item.qty * item.price).toFixed(2);
+            subotalValue.innerText = this.itemsInCart.subtotal.toFixed(2);
+            shippingValue.innerText = shipping.toFixed(2);
+            tax = this.itemsInCart.subtotal * .07;
+            taxValue.innerText = tax.toFixed(2);
+            totalValue.innerText = (this.itemsInCart.subtotal + tax + shipping).toFixed(2);
+            
+            //if qty is > 0 (item has been added to cart)
+            if(item.qty > 0) {
+                const tableRow = document.createElement('tr');
+                tableRow.className = 'product-checkout';
+                
+                tableRow.innerHTML += `
+                <td id='checkoutImg'>
+                <img src='${item.img}' alt='${item.alt}' class='img-fluid checkout-img' id='checkoutImg'
+                height='250' width='200'>
+                <div class='product-desc'>
+                <p class='item-name'>${item.name}</p>
+                <p>This is a nice desription of this item. YUM!</p>
+                </div>
+                </td>
+                
+                <td>
+                <p class='unit-price'>${item.price.toFixed(2)}</p>
+                </td>
+                
+                <td>
+                <div id='itemQuantity'>
+                <p id='qtyInput'>${item.qty}</p>
+                </div>
+                </td>
+                
+                <td id='itemSubtotal'>${subTimesQty}</td>
+                `
+                table.append(tableRow);
+            }
+        }
+    })
     }
 }
 
